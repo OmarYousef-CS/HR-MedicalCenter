@@ -114,32 +114,33 @@ router.post('/', isAdmin, async (req, res) => {
 
 // Update a Worker
 router.put('/:id', isAdmin, async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { firstName, lastName, number, startDate, email, personalId, workerClass, role } = req.body;
-  
-      // Manually check validation
-      if (!firstName || !lastName || !number || !startDate || !email || !personalId || !workerClass || !role) {
-        return res.status(400).json({ message: 'All fields are required' });
-      }
-      
-      firstName = firstName.trim();
-      lastName = lastName.trim();
-      number = number.trim();
-      email = email.trim();
-      role = role.trim();
+  try {
+    const { id } = req.params;
+    let { firstName, lastName, number, startDate, email, personalId, workerClass, role } = req.body;
 
-      const ifClassExist = await Classes.findOne({ workerClass });
-      if (!ifClassExist) { 
-        return res.status(404).json({ message: "Class not found" }); 
-      }
-
-      const updatedWorker = await Worker.findByIdAndUpdate({ _id: id } , 
-        { firstName, lastName, number, startDate, email, personalId, class: workerClass, role })
-      res.status(200).json(updatedWorker);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
+    // Manually check validation
+    if (!firstName || !lastName || !number || !startDate || !email || !personalId || !workerClass || !role) {
+      return res.status(400).json({ message: 'All fields are required' });
     }
+
+    firstName = firstName.trim();
+    lastName = lastName.trim();
+    number = number.trim();
+    email = email.trim();
+    role = role.trim();
+
+    const ifClassExist = await Classes.findOne({ workerClass });
+    if (!ifClassExist) { 
+      return res.status(404).json({ message: "Class not found" }); 
+    }
+
+    const updatedWorker = await Worker.findByIdAndUpdate({ _id: id } , 
+      { firstName, lastName, number, startDate, email, personalId, class: workerClass, role }
+      ,{ new: true })
+    res.status(200).json(updatedWorker);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 });  
 
 // Delete a Worker

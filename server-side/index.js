@@ -40,14 +40,16 @@ app.use(session({
   resave: false, 
   saveUninitialized: false,
   store: mongoDBstore,
-  /*cookie: {
+  proxy: true,
+  cookie: {
     maxAge: MAX_AGE,
     secure: true,
     httpOnly: true,
     sameSite: 'none',
-  },*/
+  },
   credentials: true,
 }));
+app.set('trust proxy', 1); 
 app.use(passport.initialize());
 app.use(passport.session());
 
